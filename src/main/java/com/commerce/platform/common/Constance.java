@@ -15,4 +15,6 @@ public class Constance {
     public static Integer RESPONSE_PARAM_ERROR=1000502;
     //未知错误 code为1000500
     public static Integer RESPONSE_ERROR=1000500;
+
+    public static String KEY="codingXuan2017";
 }
