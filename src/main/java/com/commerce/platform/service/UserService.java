@@ -3,6 +3,7 @@ package com.commerce.platform.service;
 import com.commerce.platform.common.Result;
 import com.commerce.platform.domain.User;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
@@ -15,4 +16,6 @@ public interface UserService {
     List<User> getUserByEmail(String email);
 
     Result insertAdminUser(Map<String, String> paraMap) throws Exception;
+
+    Result login(Map<String, Object> paraMap, HttpServletRequest request);
 }

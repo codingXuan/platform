@@ -97,4 +97,64 @@ public class UserController {
         }
         return result;
     }
+
+
+    /**
+     * 登录接口
+     * @param request
+     * @param paraMap
+     * @return
+     */
+    @RequestMapping(value="/login",method=RequestMethod.POST)
+    @ApiOperation(value="用户登录:/user/login",notes="邮箱做为用户名",httpMethod="POST",response=Result.class)
+    @ApiResponse(code=200,message="登录成功")
+    public Result login(HttpServletRequest request,@RequestBody @ApiParam(name="paraMap",value="登录请求参数:{\"email\":\"邮箱\","
+            + "\"password\":\"密码(DES加密后的密文)\"}",required=true) Map<String, Object> paraMap){
+        Result result = new Result();
+        if(!paraMap.containsKey("email")){
+            result.setCode(Constance.RESPONSE_PARAM_EMPTY);
+            result.setMsg("请传递email");
+            return result;
+        }
+        if(!paraMap.containsKey("password")){
+            result.setCode(Constance.RESPONSE_PARAM_EMPTY);
+            result.setMsg("请传递密码");
+            return result;
+        }
+        try {
+            //正则表达式的模式
+            String password = EncryptUtils.decryption(paraMap.get("password").toString(),EncryptUtils.desKey);
+            String rule_psd="(?![^a-zA-Z0-9]+$)(?![^a-zA-Z/D]+$)(?![^0-9/D]+$).{8,}$";
+            Pattern p = Pattern.compile(rule_psd);
+            //正则表达式的匹配器
+            Matcher m = p.matcher(password);
+            if(!m.matches()){
+                result.setCode(Constance.RESPONSE_PARAM_ERROR);
+                result.setMsg("密码必须为8位以上，包含字母、数字或特殊字符");
+                return result;
+            }
+            String RULE_EMAIL = "^\\w+((-\\w+)|(\\.\\w+))*\\@[A-Za-z0-9]+((\\.|-)[A-Za-z0-9]+)*\\.[A-Za-z0-9]+$";
+            //正则表达式的模式
+            Pattern p1 = Pattern.compile(RULE_EMAIL);
+            //正则表达式的匹配器
+            Matcher m1 = p1.matcher(paraMap.get("email").toString());
+            if(!m1.matches()){
+                result.setMsg("邮箱格式不正确！");
+                result.setCode(Constance.RESPONSE_PARAM_ERROR);
+                return result;
+            }
+
+            result=userService.login(paraMap,request);
+
+
+        } catch (Exception e) {
+            result.setMsg("内部错误！");
+            result.setCode(Constance.RESPONSE_ERROR);
+            e.printStackTrace();
+        }
+
+        return result;
+
+    }
+
 }

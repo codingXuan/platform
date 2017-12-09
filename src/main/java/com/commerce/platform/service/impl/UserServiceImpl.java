@@ -13,9 +13,11 @@ import org.springframework.util.DigestUtils;
 
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -69,6 +71,32 @@ public class UserServiceImpl implements UserService {
         sendMailUtil.sendMail(session, email, message);
         result.setCode(Constance.RESPONSE_SUCCESS);
         result.setMsg("注册成功,请先激活");
+        return result;
+    }
+
+    @Override
+    public Result login(Map<String, Object> paraMap, HttpServletRequest request) {
+        Result result = new Result();
+        String fullpwd = Constance.KEY
+                + paraMap.get("email")
+                +paraMap.get("password");
+        String md5pwd = DigestUtils.md5DigestAsHex(fullpwd.getBytes());
+        paraMap.put("password",md5pwd);
+        List<User> user = userMapper.getUserByEmail(paraMap);
+        if(user.size()>0){
+            Map<String,Object> rparaMap=new HashMap<>();
+            User loginUser=user.get(0);
+            request.setAttribute("userId",loginUser.getUserId());
+            String uuid= String.valueOf(UUID.randomUUID());
+            rparaMap.put("uuid",uuid);
+            result.setMsg("登录成功");
+            result.setCode(Constance.RESPONSE_SUCCESS);
+            result.setData(rparaMap);
+        }else{
+            result.setData("");
+            result.setMsg("账号或者密码错误，登录失败!");
+            result.setCode(Constance.RESPONSE_PARAM_ERROR);
+        }
         return result;
     }
 }
