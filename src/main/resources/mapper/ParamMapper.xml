@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.commerce.platform.mapper.ParamMapper">
+
+    <select id="paramChange" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select p.src_param,p.dest_param,p.filling_id,f.filling_param,f.filling_value from param p left join filling_param f on p.src_param=f.filling_param
+           where p.company_id=#{paraMap[companyId]} AND f.type=#{paraMap[type]} OR p.src_param in
+              <foreach collection="paraMap.keys" item="key" open="(" close=")" separator=",">
+                  #{key}
+              </foreach>
+    </select>
+
+</mapper>

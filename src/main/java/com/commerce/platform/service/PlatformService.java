@@ -11,5 +11,5 @@ import java.util.Map;
  */
 @Transactional
 public interface PlatformService {
-     Result changeParam(Map<String, Object> paraMap)throws Exception;
+    public Result changeParam(Map<String, Object> paraMap)throws Exception;
 }

@@ -4,6 +4,9 @@ import com.commerce.platform.LogApplication;
 import com.commerce.platform.common.Constance;
 import com.commerce.platform.common.Result;
 import com.commerce.platform.service.PlatformService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
 import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +37,10 @@ public class PlatformController extends LogApplication{
      * @return
      */
     @RequestMapping(value="change_param",method = RequestMethod.POST)
-    public Result changeParam(HttpServletRequest request,@RequestBody Map<String, Object> paraMap){
+    @ApiResponse(code=1000200,message="转换成功!")
+    @ApiOperation(value="平台参数转换测试接口:/platform/change_param",notes="用于测试前后台是否联通与静态工厂是否在实例化对象",httpMethod="POST",response=Result.class)
+    public Result changeParam(HttpServletRequest request,@RequestBody @ApiParam(name="paraMap",value="测试传递参数:{\"ip\":\"ip地址\"" +
+            ",\"port\":\"端口\"}") Map<String, Object> paraMap){
         Result result = new Result();
         try {
             if(paraMap.isEmpty()){
@@ -42,10 +48,6 @@ public class PlatformController extends LogApplication{
                 result.setMsg("参数传递为空!");
                 return result;
             }
-
-            /*String userId=request.getParameter("userId");*/
-            String userId="1";
-            paraMap.put("userId",userId);
             result=pfs.changeParam(paraMap);
         } catch (Exception e) {
             log.debug("changeParam",e);

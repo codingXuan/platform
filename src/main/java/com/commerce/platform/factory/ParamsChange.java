@@ -6,9 +6,9 @@ import java.util.Map;
 
 /**
  * Created by Administrator on 2017/12/2 0002.
- * 参数转换的接口
+ * 提供业务处理的接口
  */
 @Component
 public interface ParamsChange {
-    public Map<String,Object> paramChange(Map<String,Object> paraMap);
+     void paramChange(Map<String, Object> paraMap);
 }
